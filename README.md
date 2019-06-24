@@ -3,4 +3,4 @@ Classic Snake Game
 
 Play it here!
 
-https://jsbin.com/xefadigage/edit?output
+https://jsbin.com/kumifavazi/1/edit?output
