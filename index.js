@@ -94,6 +94,13 @@ function moveSnake() {
     repositionSquare(snakeSquare);
   }
   
+  /* snake.nextDirection is set using keyboard input and only changes if the
+  next direction is perpendicular to snake.head.direction
+  
+  only when the snake actually is making the turn does the next direction get
+  registered
+  */
+  snake.head.direction = snake.nextDirection;
   if (snake.head.direction === "left") {
     snake.head.column--;
   }
@@ -114,15 +121,15 @@ function hasCollidedWithApple() {
   return snake.head.row === apple.row && snake.head.column === apple.column;
 }
 function handleAppleCollision() {
+  // Remove existing Apple and create a new one
   console.log('apple eaten');
-  
   apple.remove();
   apple = null;
   makeApple();
   
-  var row = snake.tail.row,
-      column = snake.tail.column;
   
+  var row = snake.tail.row;
+  var column = snake.tail.column;
   if (snake.tail.direction === "left") {
     column++;
   }
@@ -135,7 +142,6 @@ function handleAppleCollision() {
   else if (snake.tail.direction === "down") {
     row--;
   }
-  
   makeSnakeSquare(row, column);
   
   score++;
@@ -181,7 +187,6 @@ function makeApple() {
     var randomPosition = getRandomAvailablePosition();
     apple.column = randomPosition.column;
     apple.row = randomPosition.row;
-    
     repositionSquare(apple);
   
     board.append(apple);
@@ -194,36 +199,35 @@ function getRandomAvailablePosition() {
   var spaceIsAvailable = false;
   var randomPosition = {};
   
-  while (spaceIsAvailable === false) {
+  while (!spaceIsAvailable) {
     randomPosition.column = Math.floor(Math.random() * board.rows);
     randomPosition.row = Math.floor(Math.random() * board.rows);
     spaceIsAvailable = true;
     
-    for (var i = 0; i < snake.body.length; i++) {
-      if (snake.body[i].row === randomPosition.row && snake.body[i].column === randomPosition.column) {
+    snake.body.forEach(function(snakeSquare) {
+      if (snakeSquare.row === randomPosition.row && snakeSquare.column === randomPosition.column) {
         spaceIsAvailable = false;
-        break;
       }
-    }
+    });
+    
   }
   
   return randomPosition;
-  
 }
 
 function setNextDirection(event) {
   var keyPressed = event.which;
   if (keyPressed === KEY.LEFT && snake.head.direction !== "left" && snake.head.direction !== "right") {
-    snake.head.direction = "left";
+    snake.nextDirection = "left";
   }
   else if (keyPressed === KEY.RIGHT && snake.head.direction !== "left" && snake.head.direction !== "right") {
-    snake.head.direction = "right";
+    snake.nextDirection = "right";
   }
   else if (keyPressed === KEY.UP && snake.head.direction !== "up" && snake.head.direction !== "down") {
-    snake.head.direction = "up";
+    snake.nextDirection = "up";
   }
   else if (keyPressed === KEY.DOWN && snake.head.direction !== "up" && snake.head.direction !== "down") {
-    snake.head.direction = "down";
+    snake.nextDirection = "down";
   }
 }
 
