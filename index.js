@@ -213,11 +213,11 @@ function setNextDirection(event) {
   var keyPressed = event.which;
   
   /* only set the next direction if it is perpendicular to the current direction */
-  if (snake.head.direction === "up" || snake.head.direction === "down") {
+  if (snake.head.direction !== "left" && snake.head.direction !== "right") {
     if (keyPressed === KEY.LEFT) { snake.nextDirection = "left"; }
     if (keyPressed === KEY.RIGHT) { snake.nextDirection = "right"; }
   }
-  else if (snake.head.direction === "left" || snake.head.direction === "right") {
+  else if (snake.head.direction !== "up" && snake.head.direction !== "down") {
     if (keyPressed === KEY.UP) { snake.nextDirection = "up"; }
     if (keyPressed === KEY.DOWN) { snake.nextDirection = "down"; }
   }
