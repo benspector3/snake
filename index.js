@@ -1,30 +1,21 @@
 /* global $*/
 
-// Set window sessionStorage to keep track of high scores (lowest time)
-sessionStorage.setItem("highScore", 0);
+// game variables
+var snake = {};
+var apple;
+var board = $('#board');
+board.rows = board.columns = 20;
+board.squareSize = 20;
 
 // timer variables
 var timer = $('#timer');
-var timeStr;
 var time;
 
 // score variables
-var scoreElement = $('#score');
 var score;
+var scoreElement = $('#score');
 var highScoreElement = $('#highScore');
-
-// board variables
-var board = $('#board');
-board.rows = 20;
-board.columns = 20;
-var squareSize = 20;
-
-// snake variables
-var snake = {};
-snake.speed = 10;
-
-// apple
-var apple;
+sessionStorage.setItem("highScore", 0);
 
 // KeyCodes
 var KEY = {
@@ -34,7 +25,10 @@ var KEY = {
   DOWN: 40
 };
 
-// interval variables
+// turn on keyboard inputs
+$('body').on('keydown', setNextDirection);
+
+// interval variables required for stopping the intervals when the game ends
 var updateInterval;
 var timerInterval;
 
@@ -49,20 +43,17 @@ function init() {
   // initialize the first apple
   apple = makeApple();
   
+  // set score to 0
+  scoreElement.text("Score: 0");
+  score = 0;
+  
   //start timer ticking at 0
   timer.text("Time: 0:00");
   time = 0;
   timerInterval = setInterval(updateTimer, 1000);
   
-  // set score to 0
-  scoreElement.text("Score: 0");
-  score = 0;
-  
   // start update interval
   updateInterval = setInterval(update, 100);
-  
-  // turn on keyboard inputs
-  $('body').on('keydown', setNextDirection);
 }
 
 /* 
@@ -82,7 +73,8 @@ function update() {
 }
 
 function moveSnake() {
-  // start at 1, the head is moved separately
+  // starting at the tail, each snakeSquare moves to the (row, column) position
+  // of the snakeSquare that comes before it. The head is moved separately
   for (var i = snake.body.length - 1; i >= 1; i--) {
     var snakeSquare = snake.body[i];
     var nextSnakeSquare = snake.body[i - 1];
@@ -95,26 +87,25 @@ function moveSnake() {
   }
   
   /* snake.nextDirection is set using keyboard input and only changes if the
-  next direction is perpendicular to snake.head.direction
+  next direction is perpendicular to snake.head.direction. This prevents the 
+  snake from turning back on itself if multiple commands are issued before the
+  next udpate.
   
-  only when the snake actually is making the turn does the next direction get
-  registered
+  snake.head.direction is then only set once at the moment the snake is prepared
+  to move forward
   */
   snake.head.direction = snake.nextDirection;
-  if (snake.head.direction === "left") {
-    snake.head.column--;
-  }
-  else if (snake.head.direction === "right") {
-    snake.head.column++;
-  }
-  else if (snake.head.direction === "up") {
-    snake.head.row--;
-  }
-  else if (snake.head.direction === "down") {
-    snake.head.row++;
-  }
+  if (snake.head.direction === "left") { snake.head.column--; }
+  else if (snake.head.direction === "right") { snake.head.column++; }
+  else if (snake.head.direction === "up") { snake.head.row--; }
+  else if (snake.head.direction === "down") { snake.head.row++; }
   
   repositionSquare(snake.head);
+}
+function repositionSquare(square) {
+  var buffer = 20;
+  square.css('left', square.column * board.squareSize + buffer);
+  square.css('top', square.row * board.squareSize + buffer);
 }
 
 function hasCollidedWithApple() {
@@ -122,28 +113,20 @@ function hasCollidedWithApple() {
 }
 function handleAppleCollision() {
   // Remove existing Apple and create a new one
-  console.log('apple eaten');
   apple.remove();
-  apple = null;
   makeApple();
   
-  
+  // calculate the location of the next snakeSquare based on the current
+  // position and direction of the tail, then create the next snakeSquare
   var row = snake.tail.row;
   var column = snake.tail.column;
-  if (snake.tail.direction === "left") {
-    column++;
-  }
-  else if (snake.tail.direction === "right") {
-    column--;
-  }
-  else if (snake.tail.direction === "up") {
-    row++;
-  }
-  else if (snake.tail.direction === "down") {
-    row--;
-  }
+  if (snake.tail.direction === "left") { column++; }
+  else if (snake.tail.direction === "right") { column--; }
+  else if (snake.tail.direction === "up") { row++; }
+  else if (snake.tail.direction === "down") { row--; }
   makeSnakeSquare(row, column);
   
+  // increase the score and update the score DOM element
   score++;
   scoreElement.text("Score: " + score);
 }
@@ -151,65 +134,76 @@ function handleAppleCollision() {
 function hasCollidedWithSnake() {
   for (var i = 1; i < snake.body.length; i++) {
     if (snake.head.row === snake.body[i].row && snake.head.column === snake.body[i].column) {
-      console.log('snake collision');
       return true;
     }
   }
 }
 function hasHitWall() {
-  return snake.head.row > 20 || snake.head.row < 0 || snake.head.column > 20 || snake.head.column < 0;
+  return snake.head.row > board.rows || snake.head.row < 0 || snake.head.column > board.columns || snake.head.column < 0;
+}
+function endGame() {
+  // turn off intervals
+  clearInterval(updateInterval);
+  clearInterval(timerInterval);
+  
+  // clear board of all elements
+  board.empty();
+  
+  // calculate the high score
+  var highScore = sessionStorage.getItem("highScore");
+  if (score > highScore) {
+    sessionStorage.setItem("highScore", score);
+    highScoreElement.text("High Score: " + score);
+    alert("New High Score!");
+  }
+  
+  // restart the game after 500 ms
+  setTimeout(function() { init(); }, 500);
 }
 
 function makeSnakeSquare(row, column) {
-  // make the snake jQuery Object
-  var snakeSquare = $('<div>').addClass('snake');
+  // make the snakeSquare jQuery Object and append it to the board
+  var snakeSquare = $('<div>').addClass('snake').appendTo(board);
 
-  // set snake position properties
+  // set snake position on the board and place it in the correct location
   snakeSquare.column = column;
   snakeSquare.row = row;
   repositionSquare(snakeSquare);
   
-  // add snakeSquare to body and set a new tail
+  // add snakeSquare to the end of the body Array and set it as the new tail
   snake.body.push(snakeSquare);
   snake.tail = snakeSquare;
   
-  board.append(snakeSquare);
-
   return snakeSquare;
 }
-
 function makeApple() {
-  // make the snake jQuery Object if one doesn't already exist
-  if (!apple) {
-    apple = $('<div>').addClass('apple');
-  
-    // set snake position properties
-    var randomPosition = getRandomAvailablePosition();
-    apple.column = randomPosition.column;
-    apple.row = randomPosition.row;
-    repositionSquare(apple);
-  
-    board.append(apple);
-  }
-  
+  // make the apple jQuery Object and append it to the board
+  apple = $('<div>').addClass('apple').appendTo(board);
+
+  // get a random available position on the board and position the apple
+  var randomPosition = getRandomAvailablePosition();
+  apple.column = randomPosition.column;
+  apple.row = randomPosition.row;
+  repositionSquare(apple);
+
   return apple;
 }
 function getRandomAvailablePosition() {
-  
-  var spaceIsAvailable = false;
+  var spaceIsAvailable;
   var randomPosition = {};
   
+  /* Generate random positions until one is found that doesn't overlap with the snake */
   while (!spaceIsAvailable) {
-    randomPosition.column = Math.floor(Math.random() * board.rows);
+    randomPosition.column = Math.floor(Math.random() * board.columns);
     randomPosition.row = Math.floor(Math.random() * board.rows);
     spaceIsAvailable = true;
     
-    snake.body.forEach(function(snakeSquare) {
+    for (var i = 0; i < snake.body.length; i++) {
+      var snakeSquare = snake.body[i];
       if (snakeSquare.row === randomPosition.row && snakeSquare.column === randomPosition.column) {
         spaceIsAvailable = false;
       }
-    });
-    
+    };
   }
   
   return randomPosition;
@@ -217,57 +211,29 @@ function getRandomAvailablePosition() {
 
 function setNextDirection(event) {
   var keyPressed = event.which;
-  if (keyPressed === KEY.LEFT && snake.head.direction !== "left" && snake.head.direction !== "right") {
-    snake.nextDirection = "left";
+  
+  /* only set the next direction if it is perpendicular to the current direction */
+  if (snake.head.direction === "up" || snake.head.direction === "down") {
+    if (keyPressed === KEY.LEFT) { snake.nextDirection = "left"; }
+    if (keyPressed === KEY.RIGHT) { snake.nextDirection = "right"; }
   }
-  else if (keyPressed === KEY.RIGHT && snake.head.direction !== "left" && snake.head.direction !== "right") {
-    snake.nextDirection = "right";
-  }
-  else if (keyPressed === KEY.UP && snake.head.direction !== "up" && snake.head.direction !== "down") {
-    snake.nextDirection = "up";
-  }
-  else if (keyPressed === KEY.DOWN && snake.head.direction !== "up" && snake.head.direction !== "down") {
-    snake.nextDirection = "down";
+  else if (snake.head.direction === "left" || snake.head.direction === "right") {
+    if (keyPressed === KEY.UP) { snake.nextDirection = "up"; }
+    if (keyPressed === KEY.DOWN) { snake.nextDirection = "down"; }
   }
 }
 
 function updateTimer() {
   time++;
 
-  var secondsOnes = (time % 60) % 10;
-  var secondsTens = Math.floor((time % 60) / 10);
+  var seconds = time % 60;
   var minutes = Math.floor(time / 60);
 
-  timeStr = minutes + ":" + secondsTens + secondsOnes;
-  timer.text("Time: " + timeStr);
-}
-function endGame() {
-  // turn off intervals
-  clearInterval(updateInterval);
-  clearInterval(timerInterval);
-
-  // turn off keyboard input
-  $('body').off('keydown');
+  // if seconds is in single digits, prepend with a 0
+  if (seconds <= 9) { seconds = "0" + seconds; }
   
-  // clear board of all elements
-  board.empty();
-  
-  // reset the apple
-  apple = null;
-  
-  // calculate high score and restart the game
-  calculateAndDisplayHighScore();
-  setTimeout(function() { init(); }, 500);
-}
-function calculateAndDisplayHighScore() {
-  var highScore = sessionStorage.getItem("highScore");
-
-  if (score > highScore) {
-    sessionStorage.setItem("highScore", score);
-    highScore = score;
-    highScoreElement.text("High Score: " + highScore);
-    alert("New High Score!");
-  }
+  // update timer text
+  timer.text("Time: " + minutes + ":" + seconds);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -275,9 +241,3 @@ function calculateAndDisplayHighScore() {
 ////////////////////////////////////////////////////////////////////////////////
 
 
-/* Called on each update to move the snake to it's next position. Also called
-by makeApple when a new apple is created */
-function repositionSquare(square) {
-  square.css('left', square.column * squareSize + 20);
-  square.css('top', square.row * squareSize + 20);
-}
