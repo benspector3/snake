@@ -285,5 +285,4 @@ function setNextDirection(event) {
   }
   
   console.log(snake.head.nextDirection);
-  
 }
