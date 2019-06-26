@@ -15,7 +15,7 @@ Play it here: https://jsbin.com/kumifavazi/1/edit?output
 - Learn how the various files in a program are linked together in an index.html file
 - Set up HTML elements whose content will be filled dynamicalyly using jQuery
 
-#### TODO 1: Add the initial HTML elements
+### TODO 1: Add the initial HTML elements
 
 This Snake program is simple. It only has a few visual components:
 - The board
@@ -36,7 +36,7 @@ Between the `<body> </body>` tags add the following elements:
 - An empty `<h1></h1>` element with an `id = "score"` property
 - An empty `<h1></h1>` element with an `id = "highScore"` property
 
-#### TODO 2: Link the CSS and jQuery files to our index page
+### TODO 2: Link the CSS and jQuery files to our index page
 This program can be built using a single HTML file, a CSS file, and a JavaScript
 file. While all three of these languages can be included in one file, it is
 best practice to separate them into their own files. We'll also be using the 
@@ -68,7 +68,7 @@ When plugging in a JavaScript file to our `index.html` page we use the tag:
 Remember this last one...
 
 
-#### TODO 3: Link the index.js file
+### TODO 3: Link the index.js file
 
 Now we want to link our `index.js` file. 
 
@@ -85,7 +85,7 @@ of our page, _after_ the `<body></body>` tags.
 Between the closing `</body>` tag and the closing `</html>` tag, use the `<src>`
 tag to link the `index.js` file.
 
-#### TODO 4: Review your work
+### TODO 4: Review your work
 
 Nice job! Our HTML page is now set up with all necessary files plugged in! Often
 times, before you even start programming, setting up a basic file structure is
@@ -257,7 +257,7 @@ As you can see, we are using a lot of functions to write out the logic. This
 is a strategy to make the main logic of the program readable. We can
 now dive into each function to get them working!
 
-#### TODO 5: Make the head move
+### TODO 5: Make the head move
 
 **Set up**
 
@@ -313,7 +313,7 @@ HINT: The top row in the board is row `0` and row numbers increase as you move
 down. The left-most column in the board is column `0` and column numbers 
 increase as you move to the right.
 
-#### TODO 6: Check for collisions with the wall
+### TODO 6: Check for collisions with the wall
 
 Now that our snake can move freely, we need to put some constraints on it. We 
 don't want our snake to leave the confines of the board (sorry snake).
@@ -336,7 +336,7 @@ snake.head.row      // the current row of snake.head
 snake.head.column   // the current column of snake.head 
 ```
 
-#### TODO 7: Add the apple
+### TODO 7: Add the apple
 
 To create an apple we can call the function `makeApple` which is defined in the
 *Helper Functions* section. We want to create an apple when the game starts so
@@ -352,7 +352,7 @@ it finds a random position for the apple by calling the function
 
 **Refresh your game and try swallowing the apple with the snake**
 
-#### TODO 8: Check for collisions with the apple
+### TODO 8: Check for collisions with the apple
 
 Now that our `apple` has been added to the board, we need to train our snake to 
 actually eat it!
@@ -386,7 +386,7 @@ snake.head.column   // the current column of snake.head
 **Save your code, refresh your game, and observe the changes!** If you did this
 step properly then your snake should be able to eat the Apple.
 
-#### TODO 9: Handle Apple Collisions
+### TODO 9: Handle Apple Collisions
 
 You may notice that our apple eating behavior isn't perfect. Find the function 
 `handleAppleCollision`. At this point it should have the following logic:
@@ -439,7 +439,7 @@ one row below.
 simply create each new snakeSquare at the point that the snake ate its first 
 apple. Complete the next TODO to make your snake properly grow.**
 
-#### TODO 10: Move the body
+### TODO 10: Move the body
 
 Find the function definition for `moveSnake`.
 
@@ -483,7 +483,7 @@ being prematurely overwritten.
 Hint 3: Remember that the snake's head is the first entry in `snake.body` so 
 make sure that your loop doesn't include index `0`!
 
-#### TODO 11: Check for snake collisions with itself
+### TODO 11: Check for snake collisions with itself
 
 After eating a few apples our snake will be long enough to potentially run into
 its own body! Try doing this and you'll notice that our snake will just breeze
@@ -504,7 +504,7 @@ Hint: Remember that the snake's head is the first entry in `snake.body` so
 make sure that you aren't comparing `snake.head` with `snake.body[0]`!
 
 
-#### TODO 12: Make sure our Apple is placed only in available positions
+### TODO 12: Make sure our Apple is placed only in available positions
 
 Our game is complete! Almost complete anyway...
 
