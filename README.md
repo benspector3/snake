@@ -49,18 +49,24 @@ project but you will need to add a few things.
 We'll start by plugging in the `index.css` file and the `jQuery.min.js` file. 
 Inside the `<head>` element, add the following lines:
 
-    <link rel="stylesheet" type="text/css" href="index.css">
-    <script src="jquery.min.js"></script>
+```html
+<link rel="stylesheet" type="text/css" href="index.css">
+<script src="jquery.min.js"></script>
+```
 
 When plugging in CSS files to our `index.html` page, we use the tag:
 
-    <link rel="stylesheet" type="text/css" href="filepath.css">
+```html
+<link rel="stylesheet" type="text/css" href="filepath.css">
+```
 
 When plugging in a JavaScript file to our `index.html` page we use the tag:
 
-    <script src="filepath.js"></script>
-
+```html
+<script src="filepath.js"></script>
+```
 Remember this last one...
+
 
 #### TODO 3: Link the index.js file
 
@@ -167,8 +173,9 @@ element has been added!
 How did it get there? Take a look at the `init` function in the Game Setup 
 section and you'll see this line:
 
-    snake.head = makeSnakeSquare(10, 10).attr('id', 'snake-head');
-
+```javascript   
+snake.head = makeSnakeSquare(10, 10).attr('id', 'snake-head');
+```
 Let's focus on the function call `makeSnakeSquare(10, 10)`.
 
 Find the function `makeSnakeSquare` and you'll see that it creates a snakeSquare 
@@ -188,15 +195,19 @@ function to distinguish the head from the rest of the body using CSS.
 keys. You'll notice that the direction that you press will be printed! This is 
 because of this line:
 
-    $('body').on('keydown', setNextDirection);
-    
+```javascript
+$('body').on('keydown', setNextDirection);
+```
+
 which makes our webpage respond to key presses with the function
 `setNextDirection`. You can find the definition of this function in the *Helper
 Functions* section at the bottom of the program.
 
 Directly above this line you'll find:
 
-    localStorage.setItem("highScore", 0);
+```javascript
+localStorage.setItem("highScore", 0);
+```
 
 which creates an entry in the local storage to keep track of the high score. The
 `localStorage` Object is a special data Object that allows us to save data
@@ -207,8 +218,10 @@ and update the `scoreElement`'s text.
 
 Finally, look at the this line:
 
-    updateInterval = setInterval(update, 100);
-    
+```javascript
+updateInterval = setInterval(update, 100);
+```
+
 This starts our game running by calling the `update` function every `100` 
 milliseconds. This will give us a way to modify the game over time. Like a flip
 book, we will animate our game by making slight adjustments on each timer
@@ -218,18 +231,20 @@ tick. In the next section we will look at the logic of this `update` function.
 
 Let's look at the logic of that `update` function:
 
-    function update() {
-      moveSnake();
-      
-      if (hasHitWall() || hasCollidedWithSnake()) {
-        endGame();
-      }
-      
-      if (hasCollidedWithApple()) {
-        handleAppleCollision();
-      }
-      
-    }
+```javascript
+function update() {
+  moveSnake();
+  
+  if (hasHitWall() || hasCollidedWithSnake()) {
+    endGame();
+  }
+  
+  if (hasCollidedWithApple()) {
+    handleAppleCollision();
+  }
+  
+}
+```    
     
 On each tick of the timer we move the snake. We'll check if it has collided
 with the wall, itself, or the apple. 
@@ -251,8 +266,10 @@ the `moveSnake` function. We'll start by moving the `head` of the snake. To
 determine what direction our snake will be moving in, add this line below
 `TODO 5`:
 
-    snake.head.direction = snake.head.nextDirection;
-    
+```javascript   
+snake.head.direction = snake.head.nextDirection;
+```
+
 `snake.head.nextDirection` is set based on keyboard input and can only be a 
 value that is perpendicular to `snake.head.direction`. 
 
@@ -262,16 +279,19 @@ the snake from turning back on itself if multiple commands are issued before
 the next timer tick.
 
 Below the line of code you just added, add these new lines of code:
-    
-    var nextRow = 0;
-    var nextColumn = 0;
-    
-    // determine the value of nextRow and nextColumn
-    
-    repositionSquare(snake.head, nextRow, nextColumn);
 
-The `repositionSquare` function accepts as input a jQuery Object, a row, and a 
-column and then places that jQuery object correctly on our board. 
+```javascript    
+var nextRow = 0;
+var nextColumn = 0;
+    
+// determine the value of nextRow and nextColumn
+    
+repositionSquare(snake.head, nextRow, nextColumn);
+```
+
+The `repositionSquare` function accepts as input square Object (which can be any
+part of the snake's body or the apple), a row, and a 
+column and then places that jQuery object correctly on the scren. 
 
 If you look at the definition of this function in the *Helper Functions* section
 you'll notice that it also update's that jQuery Object's `.row` and `.column` 
@@ -282,10 +302,12 @@ is.
 
 Use the following pieces of data to calculate the values of `nextRow` and 
 `nextColumn`
-    
-    snake.head.row          // the current row of snake.head
-    snake.head.column       // the current column of snake.head
-    snake.head.direction    // the direction that the head should move towards
+
+```javascript  
+snake.head.row          // the current row of snake.head
+snake.head.column       // the current column of snake.head
+snake.head.direction    // the direction that the head should move towards
+```
 
 HINT: The top row in the board is row `0` and row numbers increase as you move 
 down. The left-most column in the board is column `0` and column numbers 
@@ -307,10 +329,12 @@ any of the four walls of the board, false otherwise.**
 Use the following pieces of data to determine if the snake's head has collided
 with one of the walls.
 
-    ROWS                // the total number of ROWS in the board
-    COLUMNS             // the total number of COLUMNS in the board
-    snake.head.row      // the current row of snake.head
-    snake.head.column   // the current column of snake.head 
+```javascript
+ROWS                // the total number of ROWS in the board
+COLUMNS             // the total number of COLUMNS in the board
+snake.head.row      // the current row of snake.head
+snake.head.column   // the current column of snake.head 
+```
 
 #### TODO 7: Add the apple
 
@@ -318,8 +342,10 @@ To create an apple we can call the function `makeApple` which is defined in the
 *Helper Functions* section. We want to create an apple when the game starts so
 in the `init` function below `TODO 7` add this line of code:
 
-    apple = makeApple();
-    
+```javascript
+apple = makeApple();
+```
+
 If you take a look at the definition of the `makeApple` function you'll see that
 it finds a random position for the apple by calling the function
 `getRandomAvailablePosition()`. More on that later.
@@ -350,10 +376,12 @@ the apple, false otherwise**
 Use the following pieces of data to determine if the snake's head has collided
 with the apple.
 
-    apple.row           // the current row of the apple
-    apple.column        // the current column of the apple
-    snake.head.row      // the current row of snake.head
-    snake.head.column   // the current column of snake.head 
+```javascript
+apple.row           // the current row of the apple
+apple.column        // the current column of the apple
+snake.head.row      // the current row of snake.head
+snake.head.column   // the current column of snake.head 
+```
 
 **Save your code, refresh your game, and observe the changes!** If you did this
 step properly then your snake should be able to eat the Apple.
@@ -363,14 +391,15 @@ step properly then your snake should be able to eat the Apple.
 You may notice that our apple eating behavior isn't perfect. Find the function 
 `handleAppleCollision`. At this point it should have the following logic:
 
-    // increase the score and update the score DOM element
-    score++;
-    scoreElement.text("Score: " + score);
-  
-    // Remove existing Apple and create a new one
-    apple.remove();
-    makeApple();
-    
+```javascript
+// increase the score and update the score DOM element
+score++;
+scoreElement.text("Score: " + score);
+
+// Remove existing Apple and create a new one
+apple.remove();
+makeApple();
+```
 
 Some things are working fine - the score is increasing, the eaten apple 
 disappears and a new one is created - however our snake isn't getting any 
@@ -378,14 +407,15 @@ bigger! Instead a random green square is being added in the top left corner of
 the screen. What gives?!?
 
 At the bottom of the function you can find this logic:
-    
-    var row = 0;
-    var column = 0;
-    
-    // code to determine the row and column of the snakeSquare to add to the snake
-    
-    makeSnakeSquare(row, column);
-    
+
+```javascript
+var row = 0;
+var column = 0;
+
+// code to determine the row and column of the snakeSquare to add to the snake
+
+makeSnakeSquare(row, column);
+```
 
 As we can see, right now we are creating a new snakeSquare at position (0, 0).
 
@@ -395,10 +425,12 @@ placed so that it is added on to the tail of the snake**
 Use the following pieces of data to determine if the snake's head has collided
 with the apple.
 
-    snake.tail.direction    // "left" or "right" or "up" or "down"
-    snake.tail.row          // the current row of snake.tail
-    snake.tail.column       // the current column of snake.tail
-    
+```javascript
+snake.tail.direction    // "left" or "right" or "up" or "down"
+snake.tail.row          // the current row of snake.tail
+snake.tail.column       // the current column of snake.tail
+```
+
 HINT: If the snake's tail is moving right, the next snakeSquare should be one
 column to the left. If the column is moving up, the next snakeSquare should be
 one row below.
