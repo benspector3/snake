@@ -1,7 +1,7 @@
 # Snake
 Classic Snake Game
 
-Play it here: https://jsbin.com/kumifavazi/1/edit?output
+<a href = "https://jsbin.com/kumifavazi/1/edit?output" target="_blank"> Play it here:  </a>
 
 To download this project into your workspace, enter this command into your bash terminal:
 
