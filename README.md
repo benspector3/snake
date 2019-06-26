@@ -3,6 +3,10 @@ Classic Snake Game
 
 Play it here: https://jsbin.com/kumifavazi/1/edit?output
 
+To download this project into your workspace, enter this command into your bash terminal:
+
+    git clone https://github.com/benspector3/snake.git
+
 ## Learning Objectives
 - Build an app from start to finish including writing HTML, CSS, and JavaScript
 - Manipulate HTML elements using the jQuery JavaScript library
