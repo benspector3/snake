@@ -286,10 +286,10 @@ the next timer tick.
 Below the line of code you just added, add these new lines of code:
 
 ```javascript    
-var nextRow = 0;
-var nextColumn = 0;
+var nextRow = snake.head.row;
+var nextColumn = snake.head.column;
     
-// determine the value of nextRow and nextColumn
+// determine how to change the value of nextRow and nextColumn based on snake.head.direction
     
 repositionSquare(snake.head, nextRow, nextColumn);
 ```
