@@ -1,4 +1,4 @@
-/* global $, localStorage*/
+/* global $, sessionStorage*/
 
 ////////////////////////////////////////////////////////////////////////////////
 ///////////////////////// VARIABLE DECLARATIONS ////////////////////////////////
@@ -10,13 +10,9 @@ var scoreElement = $('#score');
 var highScoreElement = $('#highScore');
 
 // game variables
-var snake = {
-  head: {},
-  tail: {},
-  body: [],
-};
-var apple = {};
-var score = 0;
+var snake = {};
+var apple;
+var score;
 
 // interval variable required for stopping the update function when the game ends
 var updateInterval;
@@ -36,10 +32,6 @@ var KEY = {
 ////////////////////////////// GAME SETUP //////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-// create a highsScore variable in the browser's session storage
-// highScore will be reset every time the page is refreshed.
-localStorage.setItem("highScore", 0);
-
 // turn on keyboard inputs
 $('body').on('keydown', setNextDirection);
 
@@ -47,7 +39,8 @@ $('body').on('keydown', setNextDirection);
 init();
 
 function init() {
-  // initialize the snake head and add the 'snake-head' id attribute
+  // initialize the snake's body and head
+  snake.body = [];
   snake.head = makeSnakeSquare(10, 10).attr('id', 'snake-head');
   
   // TODO 7: initialize the first apple
@@ -174,20 +167,7 @@ function endGame() {
   // clear board of all elements
   board.empty();
   
-  // reset the snake
-  snake = {
-    head: {},
-    tail: {},
-    body: [],
-  };
-  
-  // calculate the high score
-  var highScore = localStorage.getItem("highScore");
-  if (score > highScore) {
-    localStorage.setItem("highScore", score);
-    highScoreElement.text("High Score: " + score);
-    alert("New High Score!");
-  }
+  calculateAndDisplayHighScore();
   
   // restart the game after 500 ms
   setTimeout(function() { init(); }, 500);
@@ -285,4 +265,19 @@ function setNextDirection(event) {
   }
   
   console.log(snake.head.nextDirection);
+}
+
+
+function calculateAndDisplayHighScore() {
+  // retrieve the high score from session storage if it exists, or set it to 0
+  var highScore = sessionStorage.getItem("highScore") || 0;
+
+  if (score > highScore) {
+    sessionStorage.setItem("highScore", score);
+    highScore = score;
+    alert("New High Score!");
+  }
+  
+  // update the highScoreElement to display the highScore
+  highScoreElement.text("High Score: " + highScore);
 }

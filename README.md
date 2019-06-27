@@ -175,12 +175,20 @@ the snake's head!
 element has been added!
 
 How did it get there? Take a look at the `init` function in the Game Setup 
-section and you'll see this line:
+section and you'll see these lines:
 
-```javascript   
+```javascript  
+snake.body = [];
 snake.head = makeSnakeSquare(10, 10).attr('id', 'snake-head');
 ```
-Let's focus on the function call `makeSnakeSquare(10, 10)`.
+
+First, we create the `body` property on our `snake` Object and initialize it as
+an empty Array. By modeling our snake's body with an Array, we can easily add 
+new body parts when the snake eats an apple and, most importantly, it provides 
+an easy way to maintain the order in which each body part is added.
+
+How are body parts of the snake modeled? Let's focus on the function call 
+`makeSnakeSquare(10, 10)`.
 
 Find the function `makeSnakeSquare` and you'll see that it creates a snakeSquare 
 Object using jQuery, adds it to the board, positions it on the screen, adds 
@@ -207,16 +215,8 @@ which makes our webpage respond to key presses with the function
 `setNextDirection`. You can find the definition of this function in the *Helper
 Functions* section at the bottom of the program.
 
-Directly above this line you'll find:
-
-```javascript
-localStorage.setItem("highScore", 0);
-```
-
-which creates an entry in the local storage to keep track of the high score. The
-`localStorage` Object is a special data Object that allows us to save data
-like a basic database. Inside the `init` function we also set the `score` to `0`
-and update the `scoreElement`'s text.
+Inside the `init` function we also set the `score` to `0` and update the 
+`scoreElement`'s text.
 
 #### Turning on the game
 
