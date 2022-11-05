@@ -38,6 +38,8 @@ body {
 
   border: 1px solid white;
   position: relative;
+
+  overscroll-behavior: contain;
 }
 
 #timer, #score, #highScore {
