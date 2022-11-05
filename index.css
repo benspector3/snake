@@ -27,6 +27,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+  
+  overscroll-behavior: contain;
 }
 
 #board {
@@ -38,8 +40,6 @@ body {
 
   border: 1px solid white;
   position: relative;
-
-  overscroll-behavior: contain;
 }
 
 #timer, #score, #highScore {

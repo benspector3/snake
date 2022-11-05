@@ -291,6 +291,7 @@ function handleTouchMove(evt) {
       }
     }
     else {
+      evt.preventDefault();
       if (snake.head.direction !== "up" && snake.head.direction !== "down") {
         snake.head.nextDirection = yDiff > 0 ? "up" : "down";
       }
