@@ -43,9 +43,9 @@ function init() {
   snake.body = [];
   snake.head = makeSnakeSquare(10, 10).attr('id', 'snake-head');
   
-  // initialize the first apple
-  apple = makeApple();
-  
+  // TODO 7: initialize the first apple
+
+
   // set score to 0
   scoreElement.text("Score: 0");
   score = 0;
@@ -65,46 +65,49 @@ function init() {
 function update() {
   moveSnake();
   
+  if (hasHitWall() || hasCollidedWithSnake()) {
+    endGame();
+  }
+  
   if (hasCollidedWithApple()) {
     handleAppleCollision();
   }
   
-  if (hasCollidedWithSnake() || hasHitWall()) {
-    endGame();
-  }
 }
 
 function moveSnake() {
-  // starting at the tail, each snakeSquare moves to the (row, column) position
-  // of the snakeSquare that comes before it. The head is moved separately
-  for (var i = snake.body.length - 1; i >= 1; i--) {
-    var snakeSquare = snake.body[i];
-    var nextSnakeSquare = snake.body[i - 1];
-
-    snakeSquare.direction = nextSnakeSquare.direction;
-
-    repositionSquare(snakeSquare, nextSnakeSquare.row, nextSnakeSquare.column);
-  }
+  /* 
+  TODO 10: Move each part of the snake's body such that it's body follows the head.
   
-  /* snake.head.nextDirection is set using keyboard input and only changes if the
-  next direction is perpendicular to snake.head.direction. This prevents the 
-  snake from turning back on itself if multiple commands are issued before the
-  next udpate.
+  HINT: To complete this TODO we must figure out the next direction, row, and 
+  column for each snakeSquare in the snake's body. The parts of the snake are 
+  stored in the Array snake.body and each part knows knows its current 
+  column/row properties. 
   
-  snake.head.direction is then only set once at the moment the snake is prepared
-  to move forward
   */
-  snake.head.direction = snake.head.nextDirection;
-  if (snake.head.direction === "left") { snake.head.column--; }
-  else if (snake.head.direction === "right") { snake.head.column++; }
-  else if (snake.head.direction === "up") { snake.head.row--; }
-  else if (snake.head.direction === "down") { snake.head.row++; }
   
-  repositionSquare(snake.head, snake.head.row, snake.head.column);
+  
+
+  
+  /* 
+  TODO 5: determine the next row and column for the snake's head
+  
+  HINT: The snake's head will need to move forward 1 square based on the value
+  of snake.head.direction which may be one of "left", "right", "up", or "down"
+  */
+  
+  
 }
 
 function hasCollidedWithApple() {
-  return snake.head.row === apple.row && snake.head.column === apple.column;
+  /* 
+  TODO 8: Should return true if the snake's head has collided with the apple, 
+  false otherwise
+  
+  HINT: Both the apple and the snake's head are aware of their own row and column
+  */
+  
+  return false;
 }
 
 function handleAppleCollision() {
@@ -116,27 +119,45 @@ function handleAppleCollision() {
   apple.remove();
   makeApple();
   
-  // calculate the location of the next snakeSquare based on the current
-  // position and direction of the tail, then create the next snakeSquare
-  var row = snake.tail.row;
-  var column = snake.tail.column;
-  if (snake.tail.direction === "left") { column++; }
-  else if (snake.tail.direction === "right") { column--; }
-  else if (snake.tail.direction === "up") { row++; }
-  else if (snake.tail.direction === "down") { row--; }
+  /* 
+  TODO 9: determine the location of the next snakeSquare based on the .row,
+  .column and .direction properties of the snake.tail snakeSquare
+  
+  HINT: snake.tail.direction will be either "left", "right", "up", or "down".
+  If the tail is moving "left", place the next snakeSquare to its right. 
+  If the tail is moving "down", place the next snakeSquare above it.
+  etc...
+  */ 
+  var row = 0;
+  var column = 0;
+  
+  // code to determine the row and column of the snakeSquare to add to the snake
+  
   makeSnakeSquare(row, column);
 }
 
 function hasCollidedWithSnake() {
-  for (var i = 1; i < snake.body.length; i++) {
-    if (snake.head.row === snake.body[i].row && snake.head.column === snake.body[i].column) {
-      return true;
-    }
-  }
+  /* 
+  TODO 11: Should return true if the snake's head has collided with any part of the
+  snake's body.
+  
+  HINT: Each part of the snake's body is stored in the snake.body Array. The
+  head and each part of the snake's body also knows its own row and column.
+  
+  */
+  
+  return false;
 }
 
 function hasHitWall() {
-  return snake.head.row > ROWS || snake.head.row < 0 || snake.head.column > COLUMNS || snake.head.column < 0;
+  /* 
+  TODO 6: Should return true if the snake's head has collided with the four walls of the
+  board, false otherwise.
+  
+  HINT: What will the row and column of the snake's head be if this were the case?
+  */
+  
+  return false;
 }
 
 function endGame() {
@@ -167,7 +188,7 @@ function makeSnakeSquare(row, column) {
   // set the position of the snake on the screen
   repositionSquare(snakeSquare, row, column);
   
-  // add snakeSquare to the end of the body Array and set it as the new tail
+  // push snakeSquare to the end of the body and set it as the new tail
   snake.body.push(snakeSquare);
   snake.tail = snakeSquare;
   
@@ -216,12 +237,11 @@ function getRandomAvailablePosition() {
     randomPosition.row = Math.floor(Math.random() * ROWS);
     spaceIsAvailable = true;
     
-    for (var i = 0; i < snake.body.length; i++) {
-      var snakeSquare = snake.body[i];
-      if (snakeSquare.row === randomPosition.row && snakeSquare.column === randomPosition.column) {
-        spaceIsAvailable = false;
-      }
-    }
+    /*
+    TODO 12: After generating the random position determine if that position is
+    not occupied by a snakeSquare in the snake's body. If it is then set 
+    spaceIsAvailable to false so that a new position is generated.
+    */
   }
   
   return randomPosition;
@@ -243,7 +263,10 @@ function setNextDirection(event) {
     if (keyPressed === KEY.UP) { snake.head.nextDirection = "up"; }
     if (keyPressed === KEY.DOWN) { snake.head.nextDirection = "down"; }
   }
+  
+  console.log(snake.head.nextDirection);
 }
+
 
 function calculateAndDisplayHighScore() {
   // retrieve the high score from session storage if it exists, or set it to 0
