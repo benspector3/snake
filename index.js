@@ -33,8 +33,8 @@ let KEY = {
 
 // turn on keyboard inputs
 $('body').on('keydown', setNextDirection);
-document.addEventListener('touchstart', handleTouchStart, false);        
-document.addEventListener('touchmove', handleTouchMove, false);
+document.addEventListener('touchstart', handleTouchStart);        
+document.addEventListener('touchmove', handleTouchMove, {passive:false});
 
 var xDown = null;                                                        
 var yDown = null;    
