@@ -34,7 +34,7 @@ let KEY = {
 // turn on keyboard inputs
 $('body').on('keydown', setNextDirection);
 document.addEventListener('touchstart', handleTouchStart);        
-document.addEventListener('touchmove', handleTouchMove, {passive:false});
+document.addEventListener('touchmove', handleTouchMove);
 
 var xDown = null;                                                        
 var yDown = null;    
@@ -291,7 +291,6 @@ function handleTouchMove(evt) {
       }
     }
     else {
-      evt.preventDefault();
       if (snake.head.direction !== "up" && snake.head.direction !== "down") {
         snake.head.nextDirection = yDiff > 0 ? "up" : "down";
       }

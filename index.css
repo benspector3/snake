@@ -28,7 +28,7 @@ body {
   flex-direction: column;
   align-items: center;
   
-  overscroll-behavior: contain;
+  overscroll-behavior: none;
 }
 
 #board {
