@@ -41,6 +41,7 @@ var yDown = null;
 
 // start the game
 init();
+alert("Use your keyboard or swipe to control the snake.")
 
 function init() {
   // initialize the snake's body and head
