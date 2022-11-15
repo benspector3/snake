@@ -32,7 +32,8 @@ let KEY = {
 ////////////////////////////////////////////////////////////////////////////////
 
 // turn on keyboard inputs
-document.querySelector('body').addEventListener('keydown', setNextDirection);
+const bodyElement = document.querySelector('body')
+bodyElement.addEventListener('keydown', setNextDirection);
 
 // start the game
 init();
