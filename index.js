@@ -1,13 +1,13 @@
-/* global $, sessionStorage*/
+/* global sessionStorage*/
 
 ////////////////////////////////////////////////////////////////////////////////
 ///////////////////////// VARIABLE DECLARATIONS ////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 // HTML jQuery Objects
-let board = $('#board');
-let scoreElement = $('#score');
-let highScoreElement = $('#highScore');
+let board = document.querySelector('#board');
+let scoreElement = document.querySelector('#score');
+let highScoreElement = document.querySelector('#highScore');
 
 // game variables
 let snake = {};
@@ -32,7 +32,7 @@ let KEY = {
 ////////////////////////////////////////////////////////////////////////////////
 
 // turn on keyboard inputs
-$('body').on('keydown', setNextDirection);
+document.querySelector('body').addEventListener('keydown', setNextDirection);
 document.addEventListener('touchstart', handleTouchStart);        
 document.addEventListener('touchmove', handleTouchMove);
 
@@ -46,13 +46,14 @@ alert("Use your keyboard or swipe to control the snake.")
 function init() {
   // initialize the snake's body and head
   snake.body = [];
-  snake.head = makeSnakeSquare(10, 10).attr('id', 'snake-head');
+  snake.head = makeSnakeSquare(10, 10)
+  snake.head.setAttribute('id', 'snake-head');
   
   // initialize the first apple
   apple = makeApple();
   
   // set score to 0
-  scoreElement.text("Score: 0");
+  scoreElement.innerHTML = "Score: 0";
   score = 0;
   calculateAndDisplayHighScore();
   
@@ -116,7 +117,7 @@ function hasCollidedWithApple() {
 function handleAppleCollision() {
   // increase the score and update the score DOM element
   score++;
-  scoreElement.text("Score: " + score);
+  scoreElement.innerHTML = "Score: " + score;
   
   // Remove existing Apple and create a new one
   apple.remove();
@@ -150,7 +151,8 @@ function endGame() {
   clearInterval(updateInterval);
 
   // clear board of all elements
-  board.empty();
+  removeAllChildElements(board);
+
   
   calculateAndDisplayHighScore();
   
@@ -162,13 +164,21 @@ function endGame() {
 ////////////////////////// HELPER FUNCTIONS ////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+function removeAllChildElements(parent) {
+  while (parent.firstChild) {
+    parent.removeChild(parent.firstChild);
+  }
+}
+
 /* Create an HTML element for a snakeSquare using jQuery. Then, given a row and
  * column on the board, position it on the screen. Finally, add the new 
  * snakeSquare to the snake.body Array and set a new tail.
  */
 function makeSnakeSquare(row, column) {
   // make the snakeSquare jQuery Object and append it to the board
-  let snakeSquare = $('<div>').addClass('snakeSquare').appendTo(board);
+  let snakeSquare = document.createElement('div');
+  snakeSquare.setAttribute('class', 'snakeSquare');
+  board.appendChild(snakeSquare);
 
   // set the position of the snake on the screen
   repositionSquare(snakeSquare, row, column);
@@ -192,8 +202,8 @@ function repositionSquare(square, row, column) {
   // position the square on the screen according to the row and column
   const leftOffset = (column-1) * SQUARE_SIZE + "%";
   const topOffset = (row-1) * SQUARE_SIZE + "%";
-  square.css('left', leftOffset);
-  square.css('top', topOffset);
+  square.style.left = leftOffset;
+  square.style.top = topOffset;
 }
 
 /* Create an HTML element for the apple using jQuery. Then find a random 
@@ -201,7 +211,9 @@ function repositionSquare(square, row, column) {
  */
 function makeApple() {
   // make the apple jQuery Object and append it to the board
-  apple = $('<div>').attr('id', 'apple').appendTo(board);
+  apple = document.createElement('div')
+  apple.setAttribute('id', 'apple')
+  board.appendChild(apple);
 
   // get a random available position on the board and position the apple
   let randomPosition = getRandomAvailablePosition();
@@ -262,7 +274,7 @@ function calculateAndDisplayHighScore() {
   }
   
   // update the highScoreElement to display the highScore
-  highScoreElement.text("High Score: " + highScore);
+  highScoreElement.innerHTML = "High Score: " + highScore;
 }
 
 
