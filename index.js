@@ -27,6 +27,9 @@ let KEY = {
   DOWN: 40
 };
 
+let xDown = null;                                                        
+let yDown = null;    
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////// GAME SETUP //////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -35,9 +38,6 @@ let KEY = {
 document.querySelector('body').addEventListener('keydown', setNextDirection);
 document.addEventListener('touchstart', handleTouchStart);        
 document.addEventListener('touchmove', handleTouchMove);
-
-var xDown = null;                                                        
-var yDown = null;    
 
 // start the game
 init();
@@ -152,7 +152,6 @@ function endGame() {
 
   // clear board of all elements
   removeAllChildElements(board);
-
   
   calculateAndDisplayHighScore();
   
